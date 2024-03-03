@@ -1,0 +1,27 @@
+---
+- hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - name: postgres
+    - name: consul
+
+- name: Playbook
+  hosts: webservers
+  become: yes
+  become_user: root
+  vars_files:
+    - apacheconf.yml
+  tasks:
+    - name: ensure apache is at the latest version
+      yum:
+        name: httpd
+        state: latest
+    ### SOME MORE TASKS WOULD COME HERE ###
+    # you can refer the variable you have defined earlier like this #
+    # "{{key_file}}"  (or) "{{cert_file}}" (or) "{{server_name}}" #
+    ##
+    - name: ensure apache is running
+      service:
+        name: httpd
+        state: started
